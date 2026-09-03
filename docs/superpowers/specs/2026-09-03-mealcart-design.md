@@ -125,6 +125,8 @@ interface Ingredient {
   vegan: boolean;
   isFishOrShellfish: boolean; // for pescatarian
   defaultStaple: boolean;
+  nutrition: { kcal: number; proteinG: number; carbsG: number; fatG: number };
+                          // per 100 g, per 100 ml, or per 1 each
 }
 
 interface Product {
@@ -164,9 +166,11 @@ interface Recipe {
   steps: string[];
   appliances: Appliance[];
   tags: string[];         // 'quick', 'one-pan', 'high-protein', cuisine, etc.
-  proteinGroup: string;   // 'chicken' | 'beef' | 'pork' | 'fish' | 'eggs' | 'tofu' | 'beans' | 'dairy' | 'none'
-  nutritionPerServing: { kcal: number; proteinG: number; carbsG: number; fatG: number };
+  proteinGroup: string;   // 'chicken' | 'beef' | 'pork' | 'fish' | 'shellfish' | 'eggs' | 'tofu' | 'beans' | 'dairy' | 'none'
 }
+// Recipe nutrition per serving is derived in nutrition.ts by summing each
+// ingredient's per-100 (or per-each) values times quantity, divided by
+// servings. It is not stored on the recipe.
 
 interface Preferences {
   storeId: string;
