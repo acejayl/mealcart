@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { INGREDIENTS, INGREDIENTS_BY_ID } from '../src/data/ingredients';
 import { DEFAULT_STAPLE_IDS } from '../src/data/staples';
-import { CATEGORIES } from '../src/domain/types';
+import { CATEGORIES, STORE_PROFILE_IDS } from '../src/domain/types';
+import { STORES, AISLE_ORDERS } from '../src/data/stores';
+import { PROFILES } from '../src/data/products';
 
 describe('ingredients', () => {
   it('has unique ids and at least 140 entries', () => {
@@ -25,5 +27,22 @@ describe('ingredients', () => {
     for (const id of DEFAULT_STAPLE_IDS) expect(INGREDIENTS_BY_ID[id]?.defaultStaple).toBe(true);
     const flagged = INGREDIENTS.filter((i) => i.defaultStaple).map((i) => i.id);
     expect(new Set(flagged)).toEqual(new Set(DEFAULT_STAPLE_IDS));
+  });
+});
+
+describe('stores', () => {
+  it('lists the seven stores mapped to four profiles', () => {
+    expect(STORES.map((s) => s.name).sort()).toEqual(
+      ['Costco', 'Fred Meyer', 'PCC', 'QFC', 'Safeway', "Trader Joe's", 'Whole Foods'],
+    );
+    for (const s of STORES) expect(STORE_PROFILE_IDS).toContain(s.profile);
+  });
+  it('every profile has a full aisle order with no duplicates', () => {
+    for (const id of STORE_PROFILE_IDS) {
+      const order = AISLE_ORDERS[id];
+      expect(new Set(order).size).toBe(order.length);
+      expect(new Set(order)).toEqual(new Set(CATEGORIES));
+      expect(PROFILES[id].aisleOrder).toEqual(order);
+    }
   });
 });
