@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { INGREDIENTS, INGREDIENTS_BY_ID, INGREDIENT_IDS } from '../src/data/ingredients';
 import { DEFAULT_STAPLE_IDS } from '../src/data/staples';
-import { CATEGORIES, STORE_PROFILE_IDS } from '../src/domain/types';
+import { ALLERGENS, CATEGORIES, DIETS, MEAL_TYPES, STORE_PROFILE_IDS } from '../src/domain/types';
 import { STORES, AISLE_ORDERS } from '../src/data/stores';
 import { PROFILES } from '../src/data/products';
 import { RECIPES } from '../src/data/recipes';
+import { eligibleCounts } from '../src/domain/eligibility';
+import { defaultPrefs } from './helpers';
 
 describe('ingredients', () => {
   it('has unique ids and at least 140 entries', () => {
@@ -97,5 +99,22 @@ describe('products', () => {
       const est = avail.filter((x) => x.estimated).length;
       expect(est / avail.length).toBeLessThanOrEqual(0.15);
     });
+  }
+});
+
+describe('coverage: a full week is always plannable', () => {
+  for (const profileId of STORE_PROFILE_IDS) {
+    for (const diet of DIETS) {
+      it(`${profileId} / ${diet}: at least 7 recipes per meal type`, () => {
+        const counts = eligibleCounts(RECIPES, defaultPrefs({ diet }), PROFILES[profileId], INGREDIENTS_BY_ID);
+        for (const m of MEAL_TYPES) expect(counts[m], `${profileId}/${diet}/${m}`).toBeGreaterThanOrEqual(7);
+      });
+    }
+    for (const allergen of ALLERGENS) {
+      it(`${profileId} / no ${allergen}: at least 7 recipes per meal type`, () => {
+        const counts = eligibleCounts(RECIPES, defaultPrefs({ excludedAllergens: [allergen] }), PROFILES[profileId], INGREDIENTS_BY_ID);
+        for (const m of MEAL_TYPES) expect(counts[m], `${profileId}/${allergen}/${m}`).toBeGreaterThanOrEqual(7);
+      });
+    }
   }
 });
