@@ -42,7 +42,7 @@ export const TRADER_JOES_PRODUCTS: Product[] = [
   p('cilantro', "Trader Joe's Cilantro", 1, '1 bunch', 1.99, `estimated ${D} from repeated reports of ~$1.99 for a Trader Joe's fresh herb bunch; no single confirmable current source`, { estimated: true }),
   p('parsley', "Trader Joe's Flat-Leaf Parsley", 1, '1 bunch', 1.99, `estimated ${D} from repeated reports of ~$1.99 for a Trader Joe's fresh herb bunch; no single confirmable current source`, { estimated: true }),
   p('basil', "Trader Joe's Fresh Basil", 0.75 * OZ, '0.75 oz clamshell', 2.99, `estimated ${D} from typical Trader Joe's fresh-herb clamshell pricing (~$2.99); no current price confirmed`, { estimated: true }),
-  p('green-beans', "Trader Joe's Haricots Verts (French Green Beans)", 24 * OZ, '24 oz bag', 2.00, 'https://www.tastingtable.com/1791859/best-worst-produce-trader-joes/ (2026-09-03)'),
+  p('green-beans', "Trader Joe's Haricots Verts (French Green Beans)", 12 * OZ, '12 oz bag', 2.69, 'http://exploringtraderjoes.blogspot.com/2015/04/trader-joes-haricots-verts.html (2026-09-03)'),
   p('cabbage', "Trader Joe's Green Cabbage", 1, '1 head', 2.29, `estimated ${D} from a report that Trader Joe's cabbage price rose to $2.29; exact current head size/price not independently confirmed`, { estimated: true }),
   p('bok-choy', "Trader Joe's Baby Shanghai Bok Choy", 10 * OZ, '10 oz', 2.99, GD),
   p('asparagus', "Trader Joe's Asparagus", 1 * LB, '1 lb bunch', 3.49, `estimated ${D} from typical Trader Joe's fresh-vegetable pricing; no specific current price found`, { estimated: true }),
