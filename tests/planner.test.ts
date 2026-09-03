@@ -158,10 +158,15 @@ describe('planner scoring signals (synthetic fixtures)', () => {
   it('protein adjacency: same-protein dinners land on adjacent days far less often than chance (statistical)', () => {
     // 4 "chicken" and 4 "beef" dinner recipes, equal cost, each with its own unique
     // ingredient (so the reuse bonus never applies here and can't confound this). With no
-    // adjacency penalty, two groups of 4 would put a same-protein neighbor on a large chunk
-    // of the 6 adjacent-day pairs per week just from group sizes. The -1 adjacent-day
-    // penalty should push that down sharply. Statistical: run over 20 seeds (probed
-    // empirically at ~2.5%) and assert it stays well below the no-penalty baseline.
+    // adjacency penalty at all, Monte Carlo simulation of this exact 4-chicken/4-beef/7-day
+    // fixture puts the true null baseline at ~42.8% same-protein adjacent pairs (close to
+    // the naive 3/7 estimate) - so a 0.4 cutoff barely clears that null and a simulation of
+    // the aggregate-over-20-seeds statistic under the null showed a ~22.8% chance of passing
+    // even with the -1 adjacent-day term deleted. The -1 penalty should push the real,
+    // in-code figure down sharply (probed empirically at ~2.5%, stable at both 20 and 40
+    // seeds), so tighten to 0.3 - about 12x headroom above the observed 2.5%, and still
+    // ~1.4x below the ~42.8% null - and widen to 40 seeds to shrink the null's variance
+    // further and cut the false-pass risk under a deleted penalty close to zero.
     const ingredientsById: Record<string, Ingredient> = {};
     const products: Record<string, Product> = {};
     const recipes: Recipe[] = [];
@@ -177,7 +182,7 @@ describe('planner scoring signals (synthetic fixtures)', () => {
     const proteinOf = (id: string | null) => (id?.startsWith('chicken') ? 'chicken' : 'beef');
     let samePairs = 0;
     let totalPairs = 0;
-    for (let seed = 1; seed <= 20; seed++) {
+    for (let seed = 1; seed <= 40; seed++) {
       const c = synthCtx(recipes, ingredientsById, products, { mealsToPlan: ['dinner'] });
       const plan = generatePlan(c, seed);
       const byDay = plan.slots.filter((s) => s.meal === 'dinner').sort((a, b) => a.day - b.day);
@@ -186,8 +191,8 @@ describe('planner scoring signals (synthetic fixtures)', () => {
         if (proteinOf(byDay[i].recipeId) === proteinOf(byDay[i + 1].recipeId)) samePairs++;
       }
     }
-    expect(totalPairs).toBe(6 * 20);
-    expect(samePairs / totalPairs).toBeLessThan(0.4);
+    expect(totalPairs).toBe(6 * 40);
+    expect(samePairs / totalPairs).toBeLessThan(0.3);
   });
 
   it("protein adjacency: a lunch sharing that day's dinner protein loses to a differently-grouped lunch almost every time (near-deterministic)", () => {
