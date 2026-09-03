@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INGREDIENTS, INGREDIENTS_BY_ID } from '../src/data/ingredients';
+import { INGREDIENTS, INGREDIENTS_BY_ID, INGREDIENT_IDS } from '../src/data/ingredients';
 import { DEFAULT_STAPLE_IDS } from '../src/data/staples';
 import { CATEGORIES, STORE_PROFILE_IDS } from '../src/domain/types';
 import { STORES, AISLE_ORDERS } from '../src/data/stores';
@@ -45,4 +45,28 @@ describe('stores', () => {
       expect(PROFILES[id].aisleOrder).toEqual(order);
     }
   });
+});
+
+describe('products', () => {
+  for (const id of STORE_PROFILE_IDS) {
+    it(`${id}: exactly one product per ingredient`, () => {
+      const products = Object.values(PROFILES[id].products);
+      expect(products.map((x) => x.ingredientId).sort()).toEqual([...INGREDIENT_IDS].sort());
+    });
+    it(`${id}: available products have size, price and a source`, () => {
+      for (const x of Object.values(PROFILES[id].products)) {
+        if (!x.available) continue;
+        expect(x.packSize).toBeGreaterThan(0);
+        expect(x.price).toBeGreaterThan(0);
+        expect(x.priceSource.length).toBeGreaterThan(10);
+        expect(x.packLabel.length).toBeGreaterThan(0);
+        if (!x.estimated) expect(x.priceSource).toMatch(/^https?:\/\//);
+      }
+    });
+    it(`${id}: at most 15% of products are estimated`, () => {
+      const avail = Object.values(PROFILES[id].products).filter((x) => x.available);
+      const est = avail.filter((x) => x.estimated).length;
+      expect(est / avail.length).toBeLessThanOrEqual(0.15);
+    });
+  }
 });
