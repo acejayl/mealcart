@@ -1,0 +1,56 @@
+:root {
+  --bg: #fbfaf7; --surface: #ffffff; --ink: #1f2a22; --muted: #6b7570; --line: #e4e6e1;
+  --accent: #2f7d4a; --accent-ink: #ffffff; --accent-soft: #e6f2ea; --warn: #b4531a; --warn-soft: #fdeee3;
+  --radius: 14px; --tab-h: 64px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink); background: var(--bg); color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+body { background: var(--bg); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; }
+h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
+h2 { font-size: 1.1rem; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; margin: 0.75rem 0 0.25rem; }
+p { margin: 0.25rem 0; }
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.screen { flex: 1; padding: 16px 16px calc(var(--tab-h) + 24px + env(safe-area-inset-bottom)); max-width: 640px; width: 100%; margin: 0 auto; }
+.screen.no-tabs { padding-bottom: 32px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: 8px 0; }
+.card.tappable { cursor: pointer; }
+.card.tappable:active { background: var(--accent-soft); }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.between { justify-content: space-between; }
+.grow { flex: 1; min-width: 0; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.small { font-size: 0.85rem; }
+.emoji { font-size: 1.8rem; line-height: 1; width: 40px; text-align: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 10px 16px; min-height: 44px; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.danger { color: var(--warn); border-color: var(--warn); }
+.btn.icon { min-width: 44px; padding: 8px; font-size: 1.1rem; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn.block { width: 100%; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 14px; min-height: 40px; cursor: pointer; }
+.chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.field label { font-weight: 600; }
+.field input, .field select { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 44px; background: var(--surface); }
+.banner { border-radius: var(--radius); padding: 10px 14px; margin: 8px 0; }
+.banner.warn { background: var(--warn-soft); color: var(--warn); }
+.banner.info { background: var(--accent-soft); color: var(--accent); }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; height: calc(var(--tab-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line); display: flex; }
+.tabbar button { flex: 1; border: 0; background: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.75rem; cursor: pointer; }
+.tabbar button .ico { font-size: 1.4rem; }
+.tabbar button.on { color: var(--accent); font-weight: 600; }
+.check { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); display: inline-flex; align-items: center; justify-content: center; background: var(--surface); flex: none; }
+.check.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.strike { text-decoration: line-through; color: var(--muted); }
+.total { font-size: 1.3rem; font-weight: 700; }
+.day-title { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; }
+.steps { padding-left: 1.2rem; } .steps li { margin: 6px 0; }
+.price-btn { border: 0; background: none; color: var(--accent); text-decoration: underline dotted; cursor: pointer; padding: 0; }
+.ingredients li { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px dashed var(--line); }
+.ingredients { list-style: none; padding: 0; margin: 0; }
+.wizard-steps { display: flex; gap: 6px; margin-bottom: 12px; } .wizard-steps span { flex: 1; height: 4px; border-radius: 2px; background: var(--line); } .wizard-steps span.on { background: var(--accent); }
