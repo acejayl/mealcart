@@ -1,3 +1,186 @@
 import type { Product } from '../../domain/types';
+import { p, unavailable, LB, OZ, FLOZ } from './helpers';
 
-export const NATURAL_PRODUCTS: Product[] = [];
+const D = '(2026-09-03)';
+// Many prices were read directly off rendered Amazon "Whole Foods Market" / "365 by Whole Foods
+// Market" search-results and product pages using a live browser session (not WebSearch summaries).
+// NODE is Amazon's "365 by Whole Foods Market" grocery-aisle category browse page. It is a genuine
+// category listing that was paged through (pages 1-4) and visually confirmed to show real prices for
+// each of the dozen pantry staples below that cite it (oats, flour, sugar, brown sugar, baking powder,
+// corn starch, peanut butter, olive oil, vegetable/canola oil, vinegar, honey, maple syrup) -- it is not
+// a copy-pasted URL from an unrelated ingredient's entry.
+const NODE = `https://www.amazon.com/b?ie=UTF8&node=20312495011 ${D}`;
+
+export const NATURAL_PRODUCTS: Product[] = [
+  // ---- produce ----
+  p('onion-yellow', 'Yellow Onion, 1 ct', 1, '1 each', 1.3, `https://www.amazon.com/s?k=whole+foods+market+yellow+onion&i=grocery ${D}`),
+  p('onion-red', 'Organic Red Onion, 1 ct', 1, '1 each', 1.69, `https://www.amazon.com/s?k=whole+foods+market+red+onion&i=grocery ${D}`),
+  p('garlic', "Christopher Ranch White Garlic, 3-head pack", 30, '3 heads (~30 cloves)', 1.75, `https://www.amazon.com/s?k=whole+foods+market+garlic&i=grocery ${D}`),
+  p('ginger', 'Produce Organic Ginger Root', 1 * LB, '~1 lb', 6.99, `https://www.amazon.com/s?k=whole+foods+market+fresh+ginger&i=grocery ${D}`),
+  p('scallions', 'Green Onions (Scallions), one bunch', 7, '1 bunch (~7)', 1.17, `https://www.amazon.com/s?k=whole+foods+market+scallions+green+onions&i=grocery ${D}`),
+  p('carrots', 'Cal Organic Organic Carrots, 16 oz', 1 * LB, '1 lb bag', 2.42, `https://www.amazon.com/s?k=whole+foods+market+carrots&i=grocery ${D}`),
+  p('celery', 'Whole Foods Market Celery, 1 ct', 500, '1 bunch (~500 g)', 2.99, `https://www.amazon.com/s?k=whole+foods+market+celery&i=grocery ${D}`),
+  p('bell-pepper', 'Red Bell Pepper, 1 ct', 1, '1 each', 2.99, `https://www.amazon.com/s?k=whole+foods+market+bell+pepper&i=grocery ${D}`),
+  p('jalapeno', 'Organic Green Jalapeño, 1 ct', 1, '1 each', 0.2, `https://www.amazon.com/s?k=whole+foods+market+jalapeno+pepper&i=grocery ${D}`),
+  p('tomato-roma', 'Tomato Roma Conventional', 1 * LB, '~1 lb', 2.89, `https://www.amazon.com/s?k=whole+foods+market+roma+tomatoes&i=grocery ${D}`),
+  p('tomato-cherry', 'NatureSweet Cherub Cherry Tomatoes, 10 oz', 10 * OZ, '10 oz', 3.48, `https://www.amazon.com/s?k=whole+foods+market+cherry+tomatoes&i=grocery ${D}`),
+  p('cucumber', 'Cucumber, 1 ct', 1, '1 each', 0.99, `https://www.amazon.com/s?k=whole+foods+market+cucumber&i=grocery ${D}`),
+  p('lettuce-romaine', 'Romaine Lettuce, 1 head', 1, '1 head', 2.06, `https://www.amazon.com/s?k=whole+foods+market+romaine+lettuce&i=grocery ${D}`),
+  p('spring-mix', '365 by Whole Foods Market Organic Spring Salad Mix, 16 oz', 16 * OZ, '16 oz', 6.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+spring+mix&i=grocery ${D}`),
+  p('spinach', '365 by Whole Foods Market Organic Baby Spinach, 5 oz', 5 * OZ, '5 oz', 3.18, `https://www.amazon.com/s?k=365+by+whole+foods+market+baby+spinach&i=grocery ${D}`),
+  p('kale', '365 by Whole Foods Market Organic Chopped Kale, 16 oz', 16 * OZ, '16 oz', 3.48, `https://www.amazon.com/s?k=365+by+whole+foods+market+chopped+kale&i=grocery ${D}`),
+  p('broccoli', '365 by Whole Foods Market Broccoli Florets, 12 oz', 12 * OZ, '12 oz', 2.98, `https://www.amazon.com/s?k=365+by+whole+foods+market+broccoli+florets&i=grocery ${D}`),
+  p('cauliflower', 'Cauliflower, 1 head', 1, '1 head', 2.96, `https://www.amazon.com/s?k=whole+foods+market+whole+cauliflower&i=grocery ${D}`),
+  p('zucchini', 'Zucchini Squash Conventional, 1 ct', 1, '1 each', 1.15, `https://www.amazon.com/s?k=whole+foods+market+zucchini&i=grocery ${D}`),
+  p('mushrooms-cremini', '365 by Whole Foods Market Organic Baby Bella Whole Mushrooms, 8 oz', 8 * OZ, '8 oz', 3.69, `https://www.amazon.com/s?k=whole+foods+market+cremini+mushrooms&i=grocery ${D}`),
+  p('sweet-potato', 'Sweet Potatoes (Orange Flesh), 3 lb', 48 * OZ, '3 lb bag', 3.58, `https://www.amazon.com/s?k=whole+foods+market+sweet+potato&i=grocery ${D}`),
+  p('potato-russet', '365 by Whole Foods Market Organic Russet Potatoes, 5 lb', 80 * OZ, '5 lb bag', 3.99, `https://www.amazon.com/s?k=whole+foods+market+russet+potatoes&i=grocery ${D}`),
+  p('potato-yukon', '365 by Whole Foods Market Organic Gold Potatoes, 3 lb bag', 48 * OZ, '3 lb bag', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+gold+potatoes&i=grocery ${D}`),
+  p('avocado', '365 by Whole Foods Market Hass Avocados, 4 ct', 4, '4 ct bag', 4.99, `https://www.amazon.com/s?k=whole+foods+market+hass+avocado&i=grocery ${D}`),
+  p('lemon', 'Lemon, 1 ct', 1, '1 each', 0.89, `https://www.amazon.com/s?k=whole+foods+market+lemon&i=grocery ${D}`),
+  p('lime', 'Lime, 1 ct', 1, '1 each', 0.25, `https://www.amazon.com/s?k=whole+foods+market+lime&i=grocery ${D}`),
+  p('banana', 'Banana Conventional, 1 ct', 1, '1 each', 0.21, `https://www.amazon.com/s?k=whole+foods+market+banana&i=grocery ${D}`),
+  p('apple', 'Honeycrisp Apple, 1 ct', 1, '1 each', 1.28, `https://www.amazon.com/s?k=whole+foods+market+honeycrisp+apple&i=grocery ${D}`),
+  p('blueberries', 'Blueberries, 1 pint', 12 * OZ, '1 pint (~12 oz)', 4.49, `https://www.amazon.com/s?k=whole+foods+market+blueberries&i=grocery ${D}`),
+  p('strawberries', 'Organic Strawberries, 1 lb', 1 * LB, '1 lb', 4.16, `https://www.amazon.com/s?k=whole+foods+market+strawberries&i=grocery ${D}`),
+  p('cilantro', 'Herb Cilantro Organic, 1 bunch', 1, '1 bunch', 1.99, `https://www.amazon.com/s?k=whole+foods+market+cilantro+bunch&i=grocery ${D}`),
+  p('parsley', 'Herb Parsley Curly Bunch Organic, 1 ct', 1, '1 bunch', 2.29, `https://www.amazon.com/s?k=whole+foods+market+fresh+parsley&i=grocery ${D}`),
+  p('basil', '365 by Whole Foods Market Organic Basil, 0.46 oz', 0.46 * OZ, '0.46 oz', 3.58, `https://www.amazon.com/s?k=whole+foods+market+fresh+basil&i=grocery ${D}`),
+  p('green-beans', '365 by Whole Foods Market Trimmed Green Beans, 12 oz', 12 * OZ, '12 oz', 2.99, `https://www.amazon.com/s?k=whole+foods+market+green+beans+fresh&i=grocery ${D}`),
+  p('cabbage', 'Organic Green Cabbage, 1 head', 1, '1 head', 6.07, `https://www.amazon.com/s?k=whole+foods+market+green+cabbage&i=grocery ${D}`),
+  p('bok-choy', 'Organic Baby Bok Choy, 3 ct', 450, '3 ct (~1 lb)', 3.48, `https://www.amazon.com/s?k=whole+foods+market+baby+bok+choy&i=grocery ${D}`),
+  p('asparagus', 'Asparagus, 1 bunch', 450, '1 bunch (~1 lb)', 3.27, `https://www.amazon.com/s?k=whole+foods+market+asparagus&i=grocery ${D}`),
+  p('brussels-sprouts', 'Brussels Sprouts, 16 oz', 16 * OZ, '16 oz', 2.72, `https://www.amazon.com/s?k=whole+foods+market+brussels+sprouts&i=grocery ${D}`),
+  p('tofu-firm', '365 by Whole Foods Market Organic Firm Tofu, 14 oz', 14 * OZ, '14 oz', 2.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+firm+tofu&i=grocery ${D}`),
+
+  // ---- meat & deli ----
+  p('chicken-breast', '365 by Whole Foods Market Boneless Skinless Chicken Breast', 1 * LB, '1 lb', 5.99, `https://www.amazon.com/s?k=whole+foods+market+boneless+skinless+chicken+breast&i=grocery ${D}`),
+  p('chicken-thigh', '365 by Whole Foods Market Boneless Skinless Chicken Thighs', 1 * LB, '1 lb', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+boneless+skinless+chicken+thighs&i=grocery ${D}`),
+  p('rotisserie-chicken', 'Whole Foods Market Classic Rotisserie Chicken, Chilled', 1, '1 whole chicken', 8.99, `https://www.amazon.com/s?k=whole+foods+market+rotisserie+chicken&i=grocery ${D}`),
+  p('ground-beef', '365 by Whole Foods Market Ground Beef, 90% Lean/10% Fat, 16 oz', 16 * OZ, '1 lb', 9.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+ground+beef+90+lean&i=grocery ${D}`),
+  p('ground-turkey', "Jennie-O Lean Ground Turkey, 93% Lean/7% Fat, 16 oz", 16 * OZ, '1 lb', 5.46, `https://www.amazon.com/s?k=365+by+whole+foods+market+ground+turkey&i=grocery ${D}`),
+  p('steak-flank', 'Whole Foods Market Beef Loin Flank Steak', 1 * LB, '1 lb', 22.99, `https://www.amazon.com/s?k=whole+foods+market+flank+steak&i=grocery ${D}`),
+  p('beef-stew', 'Whole Foods Market Beef Round Stew Meat, Pasture Raised', 1 * LB, '1 lb', 13.99, `https://www.amazon.com/s?k=whole+foods+market+beef+stew+meat+cubes&i=grocery ${D}`),
+  p('pork-tenderloin', 'Whole Foods Market Pork Loin Tenderloin', 1 * LB, '1 lb', 13.99, `https://www.amazon.com/s?k=whole+foods+market+pork+tenderloin&i=grocery ${D}`),
+  p('pork-shoulder', 'Whole Foods Market Pork Shoulder Butt Boneless', 1 * LB, '1 lb', 6.99, `https://www.amazon.com/s?k=whole+foods+market+pork+shoulder&i=grocery ${D}`),
+  p('bacon', '365 by Whole Foods Market Bacon, Uncured Applewood Smoked, 12 oz', 12 * OZ, '12 oz', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+bacon&i=grocery ${D}`),
+  p('sausage-italian', '365 by Whole Foods Market Mild Italian Pork Sausage, 16 oz', 16 * OZ, '16 oz', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+italian+sausage&i=grocery ${D}`),
+  p('deli-turkey', '365 by Whole Foods Market Oven-Roasted Turkey Breast Ultra-Thin Deli Slices, 6 oz', 6 * OZ, '6 oz', 5.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+sliced+deli+turkey&i=grocery ${D}`),
+  p('smoked-salmon', '365 by Whole Foods Market Cold Smoked Atlantic Salmon, 4 oz', 4 * OZ, '4 oz', 6.39, `https://www.amazon.com/s?k=365+by+whole+foods+market+smoked+salmon&i=grocery ${D}`),
+
+  // ---- seafood ----
+  p('salmon', 'Whole Foods Market Atlantic Salmon Fillet', 1 * LB, '1 lb', 15.99, `https://www.amazon.com/s?k=whole+foods+market+salmon+fillet+fresh&i=grocery ${D}`),
+  p('shrimp', '365 by Whole Foods Market Peeled Tail-Off Shrimp 51-60 Count, 32 oz', 32 * OZ, '32 oz (2 lb)', 22.99, `https://www.amazon.com/s?k=whole+foods+market+raw+peeled+shrimp&i=grocery ${D}`),
+  p('cod', 'Whole Foods Market Pacific Cod Fillet', 1 * LB, '1 lb', 14.99, `https://www.amazon.com/s?k=whole+foods+market+cod+fillet&i=grocery ${D}`),
+  p('tuna-canned', '365 by Whole Foods Market Unsalted Skipjack Tuna in Water, 5 oz', 1, '5 oz can', 2.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+canned+tuna&i=grocery ${D}`),
+
+  // ---- dairy & eggs ----
+  p('eggs', '365 by Whole Foods Market Large Brown Grade A Eggs, 12 ct', 12, '1 dozen', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+large+eggs+dozen&i=grocery ${D}`),
+  p('milk', '365 by Whole Foods Market Organic Whole Milk, 32 oz', 32 * FLOZ, '32 fl oz', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+whole+milk+half+gallon&i=grocery ${D}`),
+  p('butter', '365 by Whole Foods Market Unsalted Butter, 16 oz', 16 * OZ, '1 lb', 5.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+unsalted+butter&i=grocery ${D}`),
+  p('greek-yogurt', '365 by Whole Foods Market Greek Yogurt, Plain Nonfat, 32 oz', 32 * OZ, '32 oz', 4.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+plain+greek+yogurt&i=grocery ${D}`),
+  p('cheddar', '365 by Whole Foods Market Sharp Cheddar Bar, 8 oz', 8 * OZ, '8 oz', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+cheddar+cheese+block&i=grocery ${D}`),
+  p('mozzarella', '365 by Whole Foods Market Organic Shredded Mozzarella, 6 oz', 6 * OZ, '6 oz', 5.89, `https://www.amazon.com/s?k=365+by+whole+foods+market+shredded+mozzarella&i=grocery ${D}`),
+  p('parmesan', '365 by Whole Foods Market Grated Parmesan, 5 oz', 5 * OZ, '5 oz', 4.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+grated+parmesan&i=grocery ${D}`),
+  p('feta', '365 by Whole Foods Market Feta Crumbles, 6 oz', 6 * OZ, '6 oz', 4.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+feta+cheese&i=grocery ${D}`),
+  p('cream-cheese', '365 by Whole Foods Market Cream Cheese, 8 oz', 8 * OZ, '8 oz', 2.59, `https://www.amazon.com/s?k=365+by+whole+foods+market+cream+cheese&i=grocery ${D}`),
+  p('sour-cream', '365 by Whole Foods Market Organic Sour Cream, 16 oz', 16 * OZ, '16 oz', 3.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+sour+cream&i=grocery ${D}`),
+  p('heavy-cream', '365 by Whole Foods Market Organic Heavy Cream, 16 oz', 16 * FLOZ, '16 fl oz', 4.58, `https://www.amazon.com/s?k=365+by+whole+foods+market+heavy+whipping+cream&i=grocery ${D}`),
+  p('cottage-cheese', '365 by Whole Foods Market Organic Cottage Cheese, 16 oz', 16 * OZ, '16 oz', 3.69, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+cottage+cheese&i=grocery ${D}`),
+  p('oat-milk', '365 by Whole Foods Market Original Oatmilk, 32 fl oz', 32 * FLOZ, '32 fl oz', 2.85, `https://www.amazon.com/s?k=365+by+whole+foods+market+oat+milk&i=grocery ${D}`),
+
+  // ---- bakery (each = 1 slice / 1 piece) ----
+  p('bread', '365 by Whole Foods Market Organic Whole Wheat Bread, 20 oz', 20, '~20 slices/loaf', 4.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+sandwich+bread&i=grocery ${D}`),
+  p('tortilla-flour', '365 by Whole Foods Market Flour Tortillas, Family Pack, 18 ct', 18, '18 ct', 5.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+flour+tortillas+burrito&i=grocery ${D}`),
+  p('tortilla-corn', '365 by Whole Foods Market Stone Ground Corn Tortillas, 12 ct', 12, '12 ct', 1.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+corn+tortillas&i=grocery ${D}`),
+  p('bagel', 'Whole Foods Market Plain Bagel, 6 ct', 6, '6 ct', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+bagels&i=grocery ${D}`),
+  p('english-muffin', "Thomas' Original English Muffins, 6 ct", 6, '6 ct', 6.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+english+muffins&i=grocery ${D}`),
+  p('burger-bun', '365 by Whole Foods Market Classic White Hamburger Buns, 15 oz', 8, '8 ct', 3.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+burger+buns&i=grocery ${D}`),
+  p('pita', '365 by Whole Foods Market Classic White Pita Bread, 12 oz', 4, '4 ct (~12 oz)', 4.59, `https://www.amazon.com/s?k=365+by+whole+foods+market+classic+white+pita+bread+count&i=grocery ${D}`),
+  p('naan', '365 by Whole Foods Market Original Tandoori Naan, 8.8 oz', 2, '2 ct', 3.68, `https://www.amazon.com/s?k=365+by+whole+foods+market+tandoori+naan+count&i=grocery ${D}`),
+
+  // ---- frozen ----
+  p('frozen-mixed-veg', '365 by Whole Foods Market Mixed Vegetables, 16 oz', 16 * OZ, '16 oz', 2.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+frozen+mixed+vegetables&i=grocery ${D}`),
+  p('frozen-peas', '365 by Whole Foods Market Green Peas, 16 oz', 16 * OZ, '16 oz', 2.49, `https://www.amazon.com/s?k=whole+foods+market+frozen+peas&i=grocery ${D}`),
+  p('frozen-corn', '365 by Whole Foods Market Organic Sweet Yellow Corn, 16 oz', 16 * OZ, '16 oz', 3.98, `https://www.amazon.com/s?k=whole+foods+market+frozen+corn&i=grocery ${D}`),
+  p('frozen-berries', '365 by Whole Foods Market Organic Berry Blend, 32 oz', 32 * OZ, '32 oz', 11.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+berry+blend+32+ounce&i=grocery ${D}`),
+  p('edamame', '365 by Whole Foods Market Frozen Edamame, 16 oz', 16 * OZ, '16 oz', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+edamame+shelled&i=grocery ${D}`),
+  p('frozen-stirfry-veg', '365 by Whole Foods Market Organic Stir Fry Vegetable Blend, 16 oz', 16 * OZ, '16 oz', 3.98, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+stir+fry+vegetable+blend&i=grocery ${D}`),
+  unavailable('tj-cauliflower-gnocchi', "Trader Joe's exclusive item; not sold at Whole Foods/PCC"),
+  unavailable('tj-mandarin-chicken', "Trader Joe's exclusive item; not sold at Whole Foods/PCC"),
+
+  // ---- grains & pantry ----
+  p('rice-jasmine', '365 by Whole Foods Market Organic Jasmine Thai White Rice, 32 oz', 32 * OZ, '32 oz', 5.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+jasmine+rice&i=grocery ${D}`),
+  p('rice-brown', '365 by Whole Foods Market Organic Long Grain Brown Rice, 32 oz', 32 * OZ, '32 oz', 5.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+long+grain+brown+rice&i=grocery ${D}`),
+  p('quinoa', '365 by Whole Foods Market Organic White Quinoa, 16 oz', 16 * OZ, '16 oz', 4.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+quinoa&i=grocery ${D}`),
+  p('oats', '365 by Whole Foods Market Organic Old Fashioned Rolled Oats, 18 oz', 18 * OZ, '18 oz', 3.85, NODE),
+  p('spaghetti', '365 by Whole Foods Market Spaghetti, 16 oz', 16 * OZ, '16 oz', 1.59, `https://www.amazon.com/s?k=365+by+whole+foods+market+spaghetti+pasta&i=grocery ${D}`),
+  p('penne', '365 by Whole Foods Market Organic Penne Rigate, 16 oz', 16 * OZ, '16 oz', 1.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+penne+rigate&i=grocery ${D}`),
+  p('rice-noodles', 'Thai Kitchen Stir Fry Rice Noodles, Gluten Free, 14 oz', 14 * OZ, '14 oz', 4.76, `https://www.amazon.com/s?k=whole+foods+market+rice+noodles&i=grocery ${D}`),
+  p('ramen-noodles', 'Hakubaku Organic Ramen Noodles, 9.5 oz', 9.5 * OZ, '9.5 oz', 4.49, `https://www.amazon.com/s?k=whole+foods+market+dried+ramen+noodles&i=grocery ${D}`),
+  p('couscous', '365 by Whole Foods Market Organic Couscous, 10 oz', 10 * OZ, '10 oz', 3.58, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+couscous&i=grocery ${D}`),
+  p('panko', '365 by Whole Foods Market Panko Bread Crumbs, 8 oz', 8 * OZ, '8 oz', 1.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+panko+breadcrumbs&i=grocery ${D}`),
+  p('flour', '365 by Whole Foods Market All-Purpose Flour, 80 oz', 80 * OZ, '5 lb bag', 3.49, NODE),
+  p('sugar', '365 by Whole Foods Market Organic Cane Sugar, 32 oz', 32 * OZ, '32 oz', 4.79, NODE),
+  p('brown-sugar', '365 by Whole Foods Market Organic Light Brown Sugar, 24 oz', 24 * OZ, '24 oz', 3.79, NODE),
+  p('baking-powder', '365 by Whole Foods Market Baking Powder, 10 oz', 10 * OZ, '10 oz', 2.68, NODE),
+  p('cornstarch', '365 by Whole Foods Market Corn Starch, 16 oz', 16 * OZ, '16 oz', 1.95, NODE),
+  p('granola', '365 by Whole Foods Market Organic Granola Fruit and Nut, 17 oz', 17 * OZ, '17 oz', 4.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+granola&i=grocery ${D}`),
+  p('chia-seeds', '365 by Whole Foods Market Organic Black Chia Seeds, 15 oz', 15 * OZ, '15 oz', 9.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+chia+seeds&i=grocery ${D}`),
+  p('walnuts', '365 by Whole Foods Market Walnut Halves & Pieces, 16 oz', 16 * OZ, '16 oz', 7.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+walnuts&i=grocery ${D}`),
+  p('peanut-butter', '365 by Whole Foods Market Peanut Butter Crunchy, Stir and Enjoy, 16 oz', 16 * OZ, '16 oz', 2.89, NODE),
+  // 365 does not stock plain brown lentils; substituting green lentils (same family, similar cook
+  // time/use). Both lines below cite the same search page, which genuinely lists both products.
+  p('lentils', '365 by Whole Foods Market Organic Green Lentils, 16 oz', 16 * OZ, '16 oz (green; brown not stocked)', 3.98, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+green+lentils&i=grocery ${D}`),
+  p('red-lentils', '365 by Whole Foods Market Organic Red Lentils, 16 oz', 16 * OZ, '16 oz', 3.98, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+green+lentils&i=grocery ${D}`),
+  p('sesame-seeds', 'Simply Organic Organic Whole Sesame Seeds, 2.8 oz', 2.8 * OZ, '2.8 oz', 5.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+sesame+seeds&i=grocery ${D}`),
+
+  // ---- canned & jarred ----
+  p('black-beans', '365 by Whole Foods Market Unsalted Black Beans, 15 oz', 1, '15 oz can', 1.09, `https://www.amazon.com/s?k=365+by+whole+foods+market+black+beans+can&i=grocery ${D}`),
+  p('chickpeas', '365 by Whole Foods Market Unsalted Garbanzo Beans, 15.5 oz', 1, '15.5 oz can', 1.34, `https://www.amazon.com/s?k=365+by+whole+foods+market+chickpeas+can&i=grocery ${D}`),
+  p('kidney-beans', '365 by Whole Foods Market Organic Dark Red Kidney Beans, 15.5 oz', 1, '15.5 oz can', 1.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+kidney+beans+can&i=grocery ${D}`),
+  p('diced-tomatoes', '365 by Whole Foods Market Organic Diced Tomatoes, 14.5 oz', 1, '14.5 oz can', 1.68, `https://www.amazon.com/s?k=365+by+whole+foods+market+diced+tomatoes&i=grocery ${D}`),
+  p('crushed-tomatoes', '365 by Whole Foods Market Organic Crushed Tomatoes with Basil, 28 oz', 1, '28 oz can', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+crushed+tomatoes+28+oz&i=grocery ${D}`),
+  p('tomato-paste', '365 by Whole Foods Market Organic Tomato Paste, 6 oz', 1, '6 oz can', 1.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+tomato+paste&i=grocery ${D}`),
+  p('coconut-milk', '365 by Whole Foods Market Organic Unsweetened Coconut Milk, 13.5 oz', 1, '13.5 oz can', 2.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+coconut+milk+can&i=grocery ${D}`),
+  p('chicken-broth', '365 by Whole Foods Market Organic Chicken Broth, 48 fl oz', 48 * FLOZ, '48 fl oz', 3.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+chicken+broth&i=grocery ${D}`),
+  p('vegetable-broth', '365 by Whole Foods Market Organic Vegetable Broth, 48 fl oz', 48 * FLOZ, '48 fl oz', 3.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+vegetable+broth&i=grocery ${D}`),
+  p('marinara', '365 by Whole Foods Market Organic Marinara Pasta Sauce, 25 oz', 25 * FLOZ, '25 oz jar', 2.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+marinara+pasta+sauce&i=grocery ${D}`),
+  p('olives', '365 by Whole Foods Market Organic Pitted Kalamata Olives, 4.6 oz', 4.6 * OZ, '4.6 oz', 3.59, `https://www.amazon.com/s?k=365+by+whole+foods+market+kalamata+olives&i=grocery ${D}`),
+
+  // ---- oils & condiments ----
+  p('olive-oil', '365 by Whole Foods Market Extra Virgin Olive Oil, 33.8 fl oz', 33.8 * FLOZ, '33.8 fl oz', 14.99, NODE),
+  p('vegetable-oil', '365 by Whole Foods Market Canola Oil, 32 oz', 32 * FLOZ, '32 fl oz', 5.38, NODE),
+  p('soy-sauce', '365 by Whole Foods Market Organic Soy Sauce, 10 fl oz', 10 * FLOZ, '10 fl oz', 3.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+soy+sauce&i=grocery ${D}`),
+  p('sesame-oil', '365 by Whole Foods Market Toasted Sesame Seed Oil, 8.4 fl oz', 8.4 * FLOZ, '8.4 fl oz', 5.66, `https://www.amazon.com/s?k=365+by+whole+foods+market+toasted+sesame+oil&i=grocery ${D}`),
+  p('rice-vinegar', '365 by Whole Foods Market Organic Rice Vinegar, 12.7 fl oz', 12.7 * FLOZ, '12.7 fl oz', 4.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+rice+vinegar&i=grocery ${D}`),
+  p('vinegar', '365 by Whole Foods Market Organic Raw Apple Cider Vinegar, 16 fl oz', 16 * FLOZ, '16 fl oz', 3.58, NODE),
+  p('mayo', '365 by Whole Foods Market Organic Mayonnaise, 16 fl oz', 16 * OZ, '16 fl oz', 5.19, `https://www.amazon.com/s?k=365+by+whole+foods+market+mayonnaise&i=grocery ${D}`),
+  p('dijon', '365 by Whole Foods Market Organic Dijon Mustard, 8 oz', 8 * OZ, '8 oz', 2.39, `https://www.amazon.com/s?k=365+by+whole+foods+market+dijon+mustard&i=grocery ${D}`),
+  p('ketchup', '365 by Whole Foods Market Organic No Sugar Added Ketchup, 16.6 oz', 16.6 * OZ, '16.6 oz', 3.14, `https://www.amazon.com/s?k=365+by+whole+foods+market+ketchup&i=grocery ${D}`),
+  p('sriracha', 'TABASCO Brand Sriracha Sauce, Medium, 20 oz', 20 * FLOZ, '20 oz squeeze bottle', 4.79, `https://www.amazon.com/s?k=365+by+whole+foods+market+sriracha&i=grocery ${D}`),
+  p('honey', '365 by Whole Foods Market Organic Light Amber Wildflower Honey, 12 oz', 12 * OZ, '12 oz', 5.49, NODE),
+  p('maple-syrup', '365 by Whole Foods Market Organic Grade A Amber Maple Syrup, 12 fl oz', 12 * FLOZ, '12 fl oz', 8.44, NODE),
+  p('tahini', '365 by Whole Foods Market Organic Tahini, 16 oz', 16 * OZ, '16 oz', 7.58, `https://www.amazon.com/s?k=365+by+whole+foods+market+tahini&i=grocery ${D}`),
+  p('hummus', '365 by Whole Foods Market Original Hummus, 16 oz', 16 * OZ, '16 oz', 5.19, `https://www.amazon.com/s?k=365+by+whole+foods+market+original+hummus&i=grocery ${D}`),
+  p('bbq-sauce', '365 by Whole Foods Market BBQ Sauce Kansas City Organic, 18 oz', 18 * FLOZ, '18 oz', 3.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+bbq+sauce&i=grocery ${D}`),
+  p('fish-sauce', 'Thai Kitchen Gluten Free Premium Fish Sauce, 6.76 fl oz', 6.76 * FLOZ, '6.76 fl oz', 4.76, `https://www.amazon.com/s?k=whole+foods+market+fish+sauce&i=grocery ${D}`),
+  p('salsa', '365 by Whole Foods Market Organic Thick & Chunky Mild Salsa, 16 oz', 16 * FLOZ, '16 oz jar', 3.49, `https://www.amazon.com/s?k=365+by+whole+foods+market+salsa&i=grocery ${D}`),
+  p('curry-paste', 'Thai Kitchen Red Curry Paste, Gluten Free, 4 oz', 4 * OZ, '4 oz', 4.44, `https://www.amazon.com/s?k=Thai+red+curry+paste+whole+foods&i=grocery ${D}`),
+  p('pesto', 'Whole Foods Market Basil Pesto, 6.5 oz', 6.5 * OZ, '6.5 oz', 3.99, `https://www.amazon.com/s?k=365+by+whole+foods+market+basil+pesto&i=grocery ${D}`),
+
+  // ---- spices (all default staples) ----
+  p('salt', '365 by Whole Foods Market Kosher Sea Salt, Coarse, 2.2 lb', 2.2 * LB, '2.2 lb', 2.96, `https://www.amazon.com/s?k=365+by+whole+foods+market+kosher+salt&i=grocery ${D}`),
+  p('black-pepper', '365 by Whole Foods Market Organic Black Pepper Ground, 1.8 oz', 1.8 * OZ, '1.8 oz', 4.29, `https://www.amazon.com/s?k=365+by+whole+foods+market+black+pepper+ground&i=grocery ${D}`),
+  p('cumin', '365 by Whole Foods Market Organic Ground Cumin, 1.59 oz', 1.59 * OZ, '1.59 oz', 3.58, `https://www.amazon.com/365-Everyday-Value-Organic-Ground/dp/B074MFL1VM ${D}`),
+  p('chili-powder', '365 by Whole Foods Market Chili Powder Blend Seasoning, 2.52 oz', 2.52 * OZ, '2.52 oz', 2.68, `https://www.amazon.com/s?k=365+by+whole+foods+market+chili+powder&i=grocery ${D}`),
+  p('paprika', '365 by Whole Foods Market Smoked Paprika, 1.87 oz', 1.87 * OZ, '1.87 oz', 2.99, `https://www.amazon.com/s?k=365+by+Whole+Foods+Market+smoked+paprika&i=grocery ${D}`),
+  p('garlic-powder', '365 by Whole Foods Market Garlic Powder, 2.01 oz', 2.01 * OZ, '2.01 oz', 2.99, `https://www.amazon.com/s?k=365+by+Whole+Foods+Market+garlic+powder&i=grocery ${D}`),
+  p('onion-powder', '365 by Whole Foods Market Onion Powder, 2.43 oz', 2.43 * OZ, '2.43 oz', 2.99, `https://www.amazon.com/s?k=365+by+Whole+Foods+Market+onion+powder&i=grocery ${D}`),
+  p('oregano', '365 by Whole Foods Market Organic Oregano, 0.35 oz', 0.35 * OZ, '0.35 oz', 3.58, `https://www.amazon.com/s?k=whole+foods+market+dried+oregano&i=grocery ${D}`),
+  p('italian-seasoning', '365 by Whole Foods Market Organic Italian Seasoning, 0.46 oz', 0.46 * OZ, '0.46 oz', 3.58, `https://www.amazon.com/s?k=365+by+whole+foods+market+organic+italian+seasoning&i=grocery ${D}`),
+  p('cinnamon', '365 by Whole Foods Market Organic Ground Cinnamon, 1.9 oz', 1.9 * OZ, '1.9 oz', 3.86, `https://www.amazon.com/s?k=365+by+Whole+Foods+Market+ground+cinnamon&i=grocery ${D}`),
+  p('curry-powder', 'McCormick Gourmet Organic Curry Powder, 1.75 oz', 1.75 * OZ, '1.75 oz', 5.18, `https://www.amazon.com/s?k=whole+foods+market+curry+powder+jar&i=grocery ${D}`),
+  p('red-pepper-flakes', '365 by Whole Foods Market Crushed Red Chile Peppers, 4.76 oz', 4.76 * OZ, '4.76 oz', 5.69, `https://www.amazon.com/s?k=365+by+whole+foods+market+crushed+red+chile+peppers&i=grocery ${D}`),
+  p('vanilla', '365 by Whole Foods Market Organic Vanilla Extract, 2 fl oz', 2 * FLOZ, '2 fl oz', 8.79, `https://www.amazon.com/s?k=365+by+Whole+Foods+Market+vanilla+extract&i=grocery ${D}`),
+];
