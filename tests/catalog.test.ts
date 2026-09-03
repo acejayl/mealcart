@@ -4,6 +4,7 @@ import { DEFAULT_STAPLE_IDS } from '../src/data/staples';
 import { CATEGORIES, STORE_PROFILE_IDS } from '../src/domain/types';
 import { STORES, AISLE_ORDERS } from '../src/data/stores';
 import { PROFILES } from '../src/data/products';
+import { RECIPES } from '../src/data/recipes';
 
 describe('ingredients', () => {
   it('has unique ids and at least 140 entries', () => {
@@ -43,6 +44,34 @@ describe('stores', () => {
       expect(new Set(order).size).toBe(order.length);
       expect(new Set(order)).toEqual(new Set(CATEGORIES));
       expect(PROFILES[id].aisleOrder).toEqual(order);
+    }
+  });
+});
+
+describe('recipes', () => {
+  it('has unique ids and the expected counts', () => {
+    const ids = RECIPES.map((x) => x.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const count = (m: string) => RECIPES.filter((x) => x.mealType === m).length;
+    expect(count('breakfast')).toBeGreaterThanOrEqual(24);
+    expect(count('lunch')).toBeGreaterThanOrEqual(30);
+    expect(count('dinner')).toBeGreaterThanOrEqual(36);
+  });
+  it('references only known ingredients with positive quantities', () => {
+    for (const x of RECIPES) {
+      expect(x.ingredients.length).toBeGreaterThan(0);
+      for (const ri of x.ingredients) {
+        expect(INGREDIENTS_BY_ID[ri.ingredientId], `${x.id} -> ${ri.ingredientId}`).toBeDefined();
+        expect(ri.qty).toBeGreaterThan(0);
+      }
+    }
+  });
+  it('has steps, servings, times and an emoji', () => {
+    for (const x of RECIPES) {
+      expect(x.steps.length).toBeGreaterThanOrEqual(3);
+      expect(x.servings).toBeGreaterThan(0);
+      expect(x.prepMinutes + x.cookMinutes).toBeGreaterThanOrEqual(0);
+      expect(x.emoji.length).toBeGreaterThan(0);
     }
   });
 });
