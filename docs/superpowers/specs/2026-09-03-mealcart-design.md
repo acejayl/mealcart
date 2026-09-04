@@ -262,8 +262,11 @@ Inputs: preferences, store profile, recipe library, history, current plan
 1. Order slots dinner first (all 7 days), then lunch, then breakfast. Dinners
    are the most expensive and constrain the budget most.
 2. For each slot, score every eligible recipe not yet used this week:
-   - `+reuse`: for each ingredient already in the cart, a bonus proportional
-     to the unused fraction of the pack it would otherwise waste.
+   - `+reuse`: for each ingredient already in the cart, a bonus when the
+     recipe's need fits in the leftover of a pack already being bought (a
+     full bonus if it fits, a small one if it would open another pack). This
+     models the real cost driver, avoiding a new pack, rather than a strictly
+     proportional fraction.
    - `-recent`: penalty if the recipe appeared in history (stronger for last
      week than three weeks ago).
    - `-sameProtein`: penalty if the same `proteinGroup` is already planned on
