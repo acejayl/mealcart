@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../state/context';
 import { TabBar, type Tab } from './components/TabBar';
 import { SetupScreen } from './screens/SetupScreen';
@@ -12,6 +12,9 @@ type View = { name: Tab } | { name: 'recipe'; recipeId: string };
 export default function App() {
   const { state } = useApp();
   const [view, setView] = useState<View>({ name: 'plan' });
+  // Reset dropped prefs: without this the stale 'settings' view survives the wizard, so
+  // "Plan my week" would land back on Settings instead of the new plan.
+  useEffect(() => { if (!state.prefs) setView({ name: 'plan' }); }, [state.prefs]);
   if (!state.prefs) return <SetupScreen />;
   const tab: Tab = view.name === 'recipe' ? 'plan' : view.name;
   return (

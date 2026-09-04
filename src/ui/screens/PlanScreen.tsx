@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useApp } from '../../state/context';
 import { overridesFor, profileFor, shoppingListFor, storeFor } from '../../state/selectors';
 import { regenerateOne, regenerateWeek } from '../../state/actions';
@@ -16,14 +17,26 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
   const list = shoppingListFor(state);
   const profile = profileFor(prefs);
   const overrides = overridesFor(state);
+  // Slots whose last ↻ had nothing eligible left to swap in, so the press looks like a no-op.
+  const [noAlternative, setNoAlternative] = useState<Record<string, boolean>>({});
 
   function regenWeek() {
     const next = regenerateWeek(state);
-    if (next) dispatch({ type: 'SET_PLAN', plan: next, archivePrevious: true });
+    if (next) {
+      setNoAlternative({});
+      dispatch({ type: 'SET_PLAN', plan: next, archivePrevious: true });
+    }
   }
   function regenSlot(day: number, meal: (typeof MEAL_TYPES)[number]) {
+    const key = `${day}-${meal}`;
+    const at = (p: typeof plan) => p?.slots.find((s) => s.day === day && s.meal === meal)?.recipeId ?? null;
     const next = regenerateOne(state, day, meal);
-    if (next) dispatch({ type: 'UPDATE_PLAN', plan: next });
+    if (!next || at(next) === null || at(next) === at(state.plan)) {
+      setNoAlternative((m) => ({ ...m, [key]: true }));
+      return;
+    }
+    setNoAlternative((m) => { const { [key]: _dropped, ...rest } = m; return rest; });
+    dispatch({ type: 'UPDATE_PLAN', plan: next });
   }
 
   if (!plan) {
@@ -82,14 +95,18 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
             {meals.map((meal) => {
               const slot = plan.slots.find((s) => s.day === day && s.meal === meal);
               const recipe = slot?.recipeId ? RECIPES_BY_ID[slot.recipeId] : null;
+              const stuck = noAlternative[`${day}-${meal}`];
               if (!recipe) {
                 // No slot at all = this meal type was added after the plan was made; an empty
                 // slot = the planner had nothing eligible left to put there.
                 return (
                   <div key={meal} className="card row between">
-                    <span className="muted">
-                      {MEAL_LABELS[meal]}: {slot ? 'no recipe fits your filters' : 'Not planned yet — tap ↻ to add one'}
-                    </span>
+                    <div className="grow">
+                      <span className="muted">
+                        {MEAL_LABELS[meal]}: {slot ? 'no recipe fits your filters' : 'Not planned yet — tap ↻ to add one'}
+                      </span>
+                      {stuck && <div className="muted small" role="status">No other recipe fits your settings.</div>}
+                    </div>
                     <button className="btn icon" onClick={() => regenSlot(day, meal)} aria-label={`Try again for ${MEAL_LABELS[meal]}`}>↻</button>
                   </div>
                 );
@@ -99,6 +116,7 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
                   costPerServing={recipeCostPerServing(recipe, profile, overrides, prefs.stapleIds, INGREDIENTS_BY_ID)}
                   kcal={recipeNutritionPerServing(recipe, INGREDIENTS_BY_ID).kcal}
                   warn={isEligible(recipe, prefs, profile, INGREDIENTS_BY_ID) ? undefined : "Doesn't fit your current settings"}
+                  note={stuck ? 'No other recipe fits your settings.' : undefined}
                   onOpen={() => onOpenRecipe(recipe.id)} onRegenerate={() => regenSlot(day, meal)} />
               );
             })}

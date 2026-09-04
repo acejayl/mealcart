@@ -21,8 +21,10 @@ export default defineConfig({
         scope: '/mealcart/',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          // Purpose-built: artwork inside the 80% safe zone on a full-bleed brand square, so
+          // launcher masks cannot crop into it.
+          { src: 'pwa-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
         ],
       },
       workbox: { globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },

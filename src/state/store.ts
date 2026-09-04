@@ -32,7 +32,13 @@ export type Action =
 export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_PREFS':
-      return { ...state, prefs: action.prefs };
+      // Keep plan.storeId in step with the prefs the plan is now displayed and priced under,
+      // so the field can never go stale after a store change with "Keep current plan".
+      return {
+        ...state,
+        prefs: action.prefs,
+        plan: state.plan ? { ...state.plan, storeId: action.prefs.storeId } : state.plan,
+      };
     case 'SET_PLAN': {
       const prevIds = state.plan?.slots.map((s) => s.recipeId).filter((x): x is string => !!x) ?? [];
       const history = action.archivePrevious && prevIds.length > 0 ? [prevIds, ...state.history].slice(0, 3) : state.history;

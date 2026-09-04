@@ -24,4 +24,10 @@ describe('scaling', () => {
     expect(formatQty(0.25, 'each')).toBe('¼');
     expect(formatQty(0.15, 'each')).toBe('¼');
   });
+  it('never renders a positive each-quantity as zero', () => {
+    // Half of "1 lemon" scaled down for one person still has to be bought.
+    expect(formatQty(0.1, 'each')).toBe('¼');
+    expect(formatQty(0.01, 'each')).toBe('¼');
+    expect(formatQty(0, 'each')).toBe('0');
+  });
 });

@@ -17,8 +17,8 @@ p { margin: 0.25rem 0; }
 .screen { flex: 1; padding: 16px 16px calc(var(--tab-h) + 24px + env(safe-area-inset-bottom)); max-width: 640px; width: 100%; margin: 0 auto; }
 .screen.no-tabs { padding-bottom: 32px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; margin: 8px 0; }
-.card.tappable { cursor: pointer; }
-.card.tappable:active { background: var(--accent-soft); }
+.tappable { cursor: pointer; }
+.tappable:active { background: var(--accent-soft); }
 .row { display: flex; align-items: center; gap: 10px; }
 .row.between { justify-content: space-between; }
 .grow { flex: 1; min-width: 0; }

@@ -397,7 +397,7 @@ export const DINNERS: Recipe[] = [
   }),
 
   r('slow-cooker-beef-stew', 'Slow Cooker Beef Stew', '🍲', 'dinner', {
-    servings: 4, prep: 20, cook: 480, protein: 'beef', appliances: ['slowCooker'], tags: ['american', 'one-pan'],
+    servings: 4, prep: 20, cook: 480, protein: 'beef', appliances: ['slowCooker', 'stovetop'], tags: ['american', 'one-pan'],
     ingredients: [
       ['beef-stew', 700], ['potato-yukon', 500], ['carrots', 300], ['onion-yellow', 1], ['garlic', 3],
       ['chicken-broth', 700], ['tomato-paste', 1], ['flour', 30], ['olive-oil', 15], ['salt', 4], ['black-pepper', 2],

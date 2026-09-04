@@ -36,6 +36,11 @@ export function SetupScreen() {
       <h2>{STEPS[step]}</h2>
       {step === 0 && <StoreSection value={draft} onChange={setDraft} />}
       {step === 1 && <BudgetSection value={draft} onChange={setDraft} />}
+      {step === 1 && draft.storeId === 'costco' && (
+        <Banner tone="info">
+          Costco sells bulk packs — a week for 2 people usually runs $250 or more here.
+        </Banner>
+      )}
       {step === 2 && <DietSection value={draft} onChange={setDraft} />}
       {step === 3 && <AppliancesSection value={draft} onChange={setDraft} />}
       {step === 4 && <StaplesSection value={draft} onChange={setDraft} />}

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { INGREDIENTS, INGREDIENTS_BY_ID, INGREDIENT_IDS } from '../src/data/ingredients';
 import { DEFAULT_STAPLE_IDS } from '../src/data/staples';
+import type { Appliance } from '../src/domain/types';
 import { ALLERGENS, CATEGORIES, DIETS, MEAL_TYPES, STORE_PROFILE_IDS } from '../src/domain/types';
 import { STORES, AISLE_ORDERS } from '../src/data/stores';
 import { PROFILES } from '../src/data/products';
@@ -99,6 +100,26 @@ describe('products', () => {
       const est = avail.filter((x) => x.estimated).length;
       expect(est / avail.length).toBeLessThanOrEqual(0.15);
     });
+  }
+});
+
+// The appliance set the app actually ships as its default (see DEFAULT_PREFS in
+// src/ui/components/PrefsSections.tsx). Duplicated rather than imported so this catalog test
+// stays free of UI imports; keep the two in step.
+const DEFAULT_APPLIANCES: Appliance[] = ['stovetop', 'oven', 'microwave'];
+
+describe('coverage with the shipped default appliances', () => {
+  // The suite below runs with every appliance ticked, which is not what a new user gets: they
+  // start with stovetop/oven/microwave only, so any recipe needing an air fryer, slow cooker,
+  // blender or rice cooker is out. A full week must still be plannable from that narrower pool.
+  for (const profileId of STORE_PROFILE_IDS) {
+    for (const diet of DIETS) {
+      it(`${profileId} / ${diet}: at least 7 recipes per meal type`, () => {
+        const prefs = defaultPrefs({ diet, appliances: [...DEFAULT_APPLIANCES] });
+        const counts = eligibleCounts(RECIPES, prefs, PROFILES[profileId], INGREDIENTS_BY_ID);
+        for (const m of MEAL_TYPES) expect(counts[m], `${profileId}/${diet}/${m}`).toBeGreaterThanOrEqual(7);
+      });
+    }
   }
 });
 

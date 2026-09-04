@@ -19,6 +19,15 @@ describe('reducer', () => {
     const s = reducer(initialState, { type: 'SET_PREFS', prefs: defaultPrefs() });
     expect(s.prefs?.storeId).toBe('qfc');
   });
+  it('refreshes the existing plan storeId when prefs change store', () => {
+    let s = reducer(initialState, { type: 'SET_PLAN', plan, archivePrevious: false });
+    expect(s.plan?.storeId).toBe('qfc');
+    s = reducer(s, { type: 'SET_PREFS', prefs: defaultPrefs({ storeId: 'trader-joes' }) });
+    expect(s.plan?.storeId).toBe('trader-joes');
+    expect(s.plan?.slots).toEqual(plan.slots); // the week itself is kept as-is
+    // With no plan there is nothing to refresh.
+    expect(reducer(initialState, { type: 'SET_PREFS', prefs: defaultPrefs() }).plan).toBeNull();
+  });
   it('sets a plan, archives the previous one, and clears checks', () => {
     let s = reducer(initialState, { type: 'SET_PLAN', plan, archivePrevious: false });
     s = reducer(s, { type: 'TOGGLE_CHECKED', ingredientId: 'ground-beef' });

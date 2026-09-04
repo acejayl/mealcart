@@ -16,7 +16,9 @@ function fraction(qty: number): string {
   if (rem >= 0.625) frac = '¾';
   else if (rem >= 0.375) frac = '½';
   else if (rem >= 0.125) frac = '¼';
-  if (!frac) return String(whole);
+  // A positive quantity must never read as "0" on a shopping list or recipe - floor at a
+  // quarter, the smallest fraction this formatter names.
+  if (!frac) return whole === 0 && qty > 0 ? '¼' : String(whole);
   return whole === 0 ? frac : `${whole}${frac}`;
 }
 
