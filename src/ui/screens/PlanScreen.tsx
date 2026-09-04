@@ -3,6 +3,7 @@ import { overridesFor, profileFor, shoppingListFor, storeFor } from '../../state
 import { regenerateOne, regenerateWeek } from '../../state/actions';
 import { recipeCostPerServing } from '../../domain/shoppingList';
 import { dayNutrition, recipeNutritionPerServing } from '../../domain/nutrition';
+import { isEligible } from '../../domain/eligibility';
 import { INGREDIENTS_BY_ID, RECIPES_BY_ID } from '../../data';
 import { DAY_LABELS, MEAL_LABELS, MEAL_TYPES } from '../../domain/types';
 import { Banner } from '../components/Banner';
@@ -40,6 +41,12 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
   // Only the meals actually shown below count toward the day's nutrition, so a kept plan that
   // still holds slots for un-planned meals cannot inflate the numbers next to each day.
   const plannedSlots = plan.slots.filter((s) => prefs.mealsToPlan.includes(s.meal));
+  // A kept plan can outlive the settings it was built under (store, diet, allergens,
+  // appliances). Flag those meals rather than silently rewriting the week.
+  const ineligible = plannedSlots.filter((s) => {
+    const r = s.recipeId ? RECIPES_BY_ID[s.recipeId] : null;
+    return !!r && !isEligible(r, prefs, profile, INGREDIENTS_BY_ID);
+  }).length;
 
   return (
     <>
@@ -57,6 +64,11 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
       {over > 0 && (
         <Banner tone="warn">
           Over budget by ${over.toFixed(2)}. Raise the budget, plan fewer meals, or mark more pantry staples in Settings.
+        </Banner>
+      )}
+      {ineligible > 0 && (
+        <Banner tone="warn">
+          {ineligible} {ineligible === 1 ? 'meal no longer fits' : 'meals no longer fit'} your settings — tap ↻ on {ineligible === 1 ? 'it' : 'them'} or start a new week.
         </Banner>
       )}
       {DAY_LABELS.map((label, day) => {
@@ -86,6 +98,7 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
                 <MealCard key={meal} recipe={recipe}
                   costPerServing={recipeCostPerServing(recipe, profile, overrides, prefs.stapleIds, INGREDIENTS_BY_ID)}
                   kcal={recipeNutritionPerServing(recipe, INGREDIENTS_BY_ID).kcal}
+                  warn={isEligible(recipe, prefs, profile, INGREDIENTS_BY_ID) ? undefined : "Doesn't fit your current settings"}
                   onOpen={() => onOpenRecipe(recipe.id)} onRegenerate={() => regenSlot(day, meal)} />
               );
             })}

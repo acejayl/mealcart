@@ -62,6 +62,25 @@ describe('buildShoppingList', () => {
     const dinnerAlone = buildShoppingList({ ...base, slots: [slots[0]], prefs: defaultPrefs({ mealsToPlan: ['dinner'] }) });
     expect(dinnerOnly.total).toBeCloseTo(dinnerAlone.total, 2);
   });
+  it('reports non-staple ingredients the store does not sell instead of dropping them', () => {
+    // Trader Joe's sells no rotisserie chicken, so the soup's headline ingredient cannot be
+    // priced. It must surface in `missing` rather than quietly vanishing from a cheaper total.
+    const slots: PlanSlot[] = [{ day: 0, meal: 'dinner', recipeId: 'rotisserie-chicken-soup' }];
+    const prefs = defaultPrefs();
+    const tj = buildShoppingList({ ...base, profile: PROFILES.traderJoes, slots, prefs });
+    expect(tj.items.find((i) => i.ingredientId === 'rotisserie-chicken')).toBeUndefined();
+    const gone = tj.missing.find((m) => m.ingredientId === 'rotisserie-chicken')!;
+    expect(gone).toBeDefined();
+    expect(gone.name).toBe(INGREDIENTS_BY_ID['rotisserie-chicken'].name);
+    expect(gone.neededQty).toBeGreaterThan(0);
+
+    // At a store that does stock it, it is a normal priced line and `missing` stays empty.
+    const conventional = buildShoppingList({ ...base, slots, prefs });
+    expect(conventional.items.find((i) => i.ingredientId === 'rotisserie-chicken')).toBeDefined();
+    expect(conventional.missing).toEqual([]);
+    // Staples are reported separately, never as missing.
+    expect(tj.missing.some((m) => prefs.stapleIds.includes(m.ingredientId))).toBe(false);
+  });
   it('skips null slots', () => {
     const list = buildShoppingList({ ...base, slots: [{ day: 0, meal: 'dinner', recipeId: null }], prefs: defaultPrefs() });
     expect(list.items).toEqual([]);

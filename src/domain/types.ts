@@ -149,6 +149,11 @@ export interface ShoppingListResult {
   total: number;
   inCart: number;
   staples: { ingredientId: string; name: string; neededQty: number }[];
+  /**
+   * Non-staple ingredients the chosen store does not sell. They are not priced, so the total
+   * excludes them - surfaced here so the shortfall is visible instead of silently cheap.
+   */
+  missing: { ingredientId: string; name: string; neededQty: number }[];
 }
 
 export function round2(n: number): number {

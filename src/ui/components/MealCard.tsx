@@ -1,8 +1,11 @@
 import type { Recipe } from '../../domain/types';
 import { recipeMinutes } from '../../domain/nutrition';
 
-export function MealCard({ recipe, costPerServing, kcal, onOpen, onRegenerate }: {
-  recipe: Recipe; costPerServing: number; kcal: number; onOpen: () => void; onRegenerate: () => void;
+export function MealCard({ recipe, costPerServing, kcal, warn, onOpen, onRegenerate }: {
+  recipe: Recipe; costPerServing: number; kcal: number;
+  /** Shown under the meta line when this meal no longer matches the saved preferences. */
+  warn?: string;
+  onOpen: () => void; onRegenerate: () => void;
 }) {
   return (
     <div className="card row">
@@ -12,6 +15,7 @@ export function MealCard({ recipe, costPerServing, kcal, onOpen, onRegenerate }:
         <div className="grow">
           <div>{recipe.name}</div>
           <div className="muted small">{recipeMinutes(recipe)} min · ${costPerServing.toFixed(2)}/serving · {kcal} kcal</div>
+          {warn && <div className="warn-line small">⚠ {warn}</div>}
         </div>
       </div>
       <button className="btn icon" aria-label={`Regenerate ${recipe.name}`} title="Swap this meal" onClick={onRegenerate}>↻</button>

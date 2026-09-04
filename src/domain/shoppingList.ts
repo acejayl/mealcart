@@ -29,12 +29,15 @@ export function buildShoppingList(args: BuildArgs): ShoppingListResult {
 
   const items: ShoppingItem[] = [];
   const staples: ShoppingListResult['staples'] = [];
+  const missing: ShoppingListResult['missing'] = [];
   for (const [ingredientId, qty] of needed) {
     const ingredient = ingredientsById[ingredientId];
     if (!ingredient) continue;
     if (staple.has(ingredientId)) { staples.push({ ingredientId, name: ingredient.name, neededQty: qty }); continue; }
     const product = profile.products[ingredientId];
-    if (!product || !product.available) continue;
+    // Not sold here: it cannot be priced, so record it rather than dropping it - otherwise the
+    // total silently understates the trip (a chicken soup with no chicken in the list).
+    if (!product || !product.available) { missing.push({ ingredientId, name: ingredient.name, neededQty: qty }); continue; }
     const packs = Math.max(1, Math.ceil(qty / product.packSize - 1e-9));
     const unitPrice = priceOverrides[ingredientId] ?? product.price;
     items.push({
@@ -54,10 +57,11 @@ export function buildShoppingList(args: BuildArgs): ShoppingListResult {
     else groups.push({ category: it.category, items: [it] });
   }
   staples.sort((a, b) => a.name.localeCompare(b.name));
+  missing.sort((a, b) => a.name.localeCompare(b.name));
 
   const total = round2(items.reduce((s, i) => s + i.cost, 0));
   const inCart = round2(items.filter((i) => i.checked).reduce((s, i) => s + i.cost, 0));
-  return { items, groups, total, inCart, staples };
+  return { items, groups, total, inCart, staples, missing };
 }
 
 /** Theoretical ingredient cost per serving (not pack-rounded), excluding staples. */

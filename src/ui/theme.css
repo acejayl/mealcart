@@ -48,6 +48,9 @@ p { margin: 0.25rem 0; }
 .check-box { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); display: inline-flex; align-items: center; justify-content: center; background: var(--surface); }
 .check.on .check-box { background: var(--accent); border-color: var(--accent); color: #fff; }
 .strike { text-decoration: line-through; color: var(--muted); }
+.warn-line { color: var(--warn); }
+.dim { opacity: 0.72; }
+.dim h2 { color: var(--muted); }
 .total { font-size: 1.3rem; font-weight: 700; }
 .day-title { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; }
 .steps { padding-left: 1.2rem; } .steps li { margin: 6px 0; }
