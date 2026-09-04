@@ -305,6 +305,14 @@ marginal-cost loop runs synchronously on the main thread.
 6. Group by category and sort groups by the profile's `aisleOrder`; sort items
    alphabetically within a group.
 
+Only slots whose meal type is in `prefs.mealsToPlan` feed the list, so a
+plan kept after turning a meal type off is priced for the meals shown. A
+non-staple ingredient whose product is unavailable at the current store
+(possible after a store change with "Keep current plan") is not priced; it is
+collected into a `missing` group that the List screen renders greyed under
+"Not sold at {store}" and counts in the header, so the total is never
+silently understated.
+
 The List screen shows, per item: product name, pack label, packs to buy,
 line cost, checkbox. Header: "In cart $X of $Y" where X is the cost of
 checked items and Y is the full list total, plus the budget. Tapping a price
@@ -335,6 +343,13 @@ tabs on first run (or when `prefs` is null).
   data". Changing store, diet, allergens, appliances, or meals-to-plan prompts
   to regenerate the plan. Changing budget or household size re-prices without
   regenerating and shows the over-budget banner if applicable.
+  "Keep current plan" is always offered (so a user can see what the same week
+  would cost at another store), but a kept plan is never presented as if it
+  still fit: the Plan screen marks each meal that no longer passes eligibility
+  under the new settings and shows a banner counting them, a meal type that
+  was turned on but has no slot yet renders a "Not planned yet" card whose
+  regenerate button creates and fills the slot, and the List handles
+  unavailable ingredients as described in section 9.
 
 Visual direction: mobile-first, one-column, large tap targets, system font
 stack, CSS variables for a light theme with a green accent. No photos.
@@ -348,8 +363,11 @@ eviction; the browser-tab version is not, which the Settings screen notes.
 
 ## 12. Error handling
 
-- Corrupt or unparseable stored state: discard, log to console, start at
-  Setup.
+- Corrupt or unparseable stored state, a wrong `schemaVersion`, or stored
+  `prefs`/`plan` whose basic shape is wrong (missing arrays): discard, log to
+  console, start at Setup. An error boundary around the app catches any
+  render crash and offers "Reset all data" so an installed app can never be
+  stuck on a blank screen.
 - No eligible recipe for a slot (e.g. vegan + no stovetop + Costco): leave the
   slot's `recipeId` null, show "No recipe fits your filters for this meal" on
   the card, and exclude it from cost. Setup warns when a combination yields
