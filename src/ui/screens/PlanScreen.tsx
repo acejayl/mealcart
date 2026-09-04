@@ -37,6 +37,9 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
   const total = list?.total ?? 0;
   const over = Math.max(0, Math.round((total - prefs.weeklyBudget) * 100) / 100);
   const meals = MEAL_TYPES.filter((m) => prefs.mealsToPlan.includes(m));
+  // Only the meals actually shown below count toward the day's nutrition, so a kept plan that
+  // still holds slots for un-planned meals cannot inflate the numbers next to each day.
+  const plannedSlots = plan.slots.filter((s) => prefs.mealsToPlan.includes(s.meal));
 
   return (
     <>
@@ -57,7 +60,7 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
         </Banner>
       )}
       {DAY_LABELS.map((label, day) => {
-        const n = dayNutrition(day, plan.slots, RECIPES_BY_ID, INGREDIENTS_BY_ID);
+        const n = dayNutrition(day, plannedSlots, RECIPES_BY_ID, INGREDIENTS_BY_ID);
         return (
           <section key={label}>
             <div className="day-title">
@@ -68,9 +71,13 @@ export function PlanScreen({ onOpenRecipe }: { onOpenRecipe: (recipeId: string) 
               const slot = plan.slots.find((s) => s.day === day && s.meal === meal);
               const recipe = slot?.recipeId ? RECIPES_BY_ID[slot.recipeId] : null;
               if (!recipe) {
+                // No slot at all = this meal type was added after the plan was made; an empty
+                // slot = the planner had nothing eligible left to put there.
                 return (
                   <div key={meal} className="card row between">
-                    <span className="muted">{MEAL_LABELS[meal]}: no recipe fits your filters</span>
+                    <span className="muted">
+                      {MEAL_LABELS[meal]}: {slot ? 'no recipe fits your filters' : 'Not planned yet — tap ↻ to add one'}
+                    </span>
                     <button className="btn icon" onClick={() => regenSlot(day, meal)} aria-label={`Try again for ${MEAL_LABELS[meal]}`}>↻</button>
                   </div>
                 );

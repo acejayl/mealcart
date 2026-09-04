@@ -14,10 +14,13 @@ export interface BuildArgs {
 
 export function buildShoppingList(args: BuildArgs): ShoppingListResult {
   const { slots, prefs, profile, recipesById, ingredientsById, priceOverrides, checked } = args;
+  // A kept plan can still hold slots for meals the user has since stopped planning. The Plan
+  // screen hides those cards, so the list and every total derived from it must ignore them too.
+  const planned = new Set(prefs.mealsToPlan);
   const staple = new Set(prefs.stapleIds);
   const needed = new Map<string, number>();
   for (const slot of slots) {
-    if (!slot.recipeId) continue;
+    if (!slot.recipeId || !planned.has(slot.meal)) continue;
     const recipe = recipesById[slot.recipeId];
     if (!recipe) continue;
     const f = scaleFactor(recipe, prefs.householdSize);

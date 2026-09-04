@@ -179,17 +179,20 @@ export function regenerateSlot(ctx: PlannerContext, plan: Plan, day: number, mea
   const rng = mulberry32(seed);
   const recipesById = byId(ctx.recipes);
   const staples = new Set(ctx.prefs.stapleIds);
-  const idx = plan.slots.findIndex((s) => s.day === day && s.meal === meal);
-  if (idx < 0) return plan;
-  const current = plan.slots[idx];
-  const used = new Set(plan.slots.map((s) => s.recipeId).filter((x): x is string => !!x));
+  const existing = plan.slots.findIndex((s) => s.day === day && s.meal === meal);
+  // The slot can be absent entirely when the user added a meal type to `mealsToPlan` and kept
+  // the old plan. Append an empty slot so ↻ fills it, instead of silently doing nothing.
+  const base: PlanSlot[] = existing >= 0 ? plan.slots : [...plan.slots, { day, meal, recipeId: null }];
+  const idx = existing >= 0 ? existing : base.length - 1;
+  const current = base[idx];
+  const used = new Set(base.map((s) => s.recipeId).filter((x): x is string => !!x));
   const pool = eligibleFor(meal, ctx.recipes, ctx.prefs, ctx.profile, ctx.ingredientsById).filter((r) => !used.has(r.id));
   if (pool.length === 0) return plan;
 
-  const others = plan.slots.filter((_, i) => i !== idx);
+  const others = base.filter((_, i) => i !== idx);
   const cart = cartFrom(ctx, others, recipesById);
   const scored = pool.map((r) => {
-    const trial = [...plan.slots];
+    const trial = [...base];
     trial[idx] = { ...current, recipeId: r.id };
     return { r, total: planTotal(ctx, trial), s: score(r, current, others, cart, ctx, recipesById, staples, rng) };
   });
@@ -198,7 +201,7 @@ export function regenerateSlot(ctx: PlannerContext, plan: Plan, day: number, mea
     ? within.reduce((a, b) => (b.s > a.s ? b : a))
     : scored.reduce((a, b) => (b.total < a.total ? b : a));
 
-  const slots = [...plan.slots];
+  const slots = [...base];
   slots[idx] = { ...current, recipeId: pick.r.id };
-  return { ...plan, slots, seed, overBudgetBy: Math.max(0, round2(pick.total - ctx.prefs.weeklyBudget)) };
+  return { ...plan, slots: sortSlots(slots), seed, overBudgetBy: Math.max(0, round2(pick.total - ctx.prefs.weeklyBudget)) };
 }

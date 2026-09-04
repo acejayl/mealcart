@@ -46,6 +46,22 @@ describe('buildShoppingList', () => {
     expect(chicken.checked).toBe(true);
     expect(list.inCart).toBeCloseTo(chicken.cost, 2);
   });
+  it('ignores slots whose meal type is no longer planned', () => {
+    // A kept plan still holds breakfast/lunch slots after the user narrowed mealsToPlan to
+    // dinner. Those meals are hidden on the Plan screen, so they must not reach the list.
+    const slots: PlanSlot[] = [
+      { day: 0, meal: 'dinner', recipeId: 'chicken-stir-fry' },
+      { day: 0, meal: 'breakfast', recipeId: 'granola-parfait' },
+    ];
+    const both = buildShoppingList({ ...base, slots, prefs: defaultPrefs() });
+    const dinnerOnly = buildShoppingList({ ...base, slots, prefs: defaultPrefs({ mealsToPlan: ['dinner'] }) });
+    expect(both.items.find((i) => i.ingredientId === 'granola')).toBeDefined();
+    expect(dinnerOnly.items.find((i) => i.ingredientId === 'granola')).toBeUndefined();
+    expect(dinnerOnly.total).toBeLessThan(both.total);
+
+    const dinnerAlone = buildShoppingList({ ...base, slots: [slots[0]], prefs: defaultPrefs({ mealsToPlan: ['dinner'] }) });
+    expect(dinnerOnly.total).toBeCloseTo(dinnerAlone.total, 2);
+  });
   it('skips null slots', () => {
     const list = buildShoppingList({ ...base, slots: [{ day: 0, meal: 'dinner', recipeId: null }], prefs: defaultPrefs() });
     expect(list.items).toEqual([]);

@@ -78,6 +78,25 @@ describe('planner', () => {
       expect(next.slots.find((n) => n.day === s.day && n.meal === s.meal)!.recipeId).toBe(s.recipeId);
     }
   });
+  it('regenerateSlot creates and fills a slot that the plan does not have yet', () => {
+    // The user planned dinners only, then added breakfast in Settings and kept the plan: the
+    // Plan screen renders a "Not planned yet" card whose ↻ must be able to create the slot.
+    const dinnersOnly = ctx({ mealsToPlan: ['dinner'], weeklyBudget: 1000 });
+    const plan = generatePlan(dinnersOnly, 11);
+    expect(plan.slots.find((s) => s.day === 3 && s.meal === 'breakfast')).toBeUndefined();
+
+    const withBreakfast = ctx({ weeklyBudget: 1000 });
+    const next = regenerateSlot(withBreakfast, plan, 3, 'breakfast', 77);
+    const added = next.slots.find((s) => s.day === 3 && s.meal === 'breakfast');
+    expect(added).toBeDefined();
+    expect(added!.recipeId).toBeTruthy();
+    expect(RECIPES.find((r) => r.id === added!.recipeId)!.mealType).toBe('breakfast');
+    expect(next.slots).toHaveLength(plan.slots.length + 1);
+    // Every pre-existing slot is untouched.
+    for (const s of plan.slots) {
+      expect(next.slots.find((n) => n.day === s.day && n.meal === s.meal)!.recipeId).toBe(s.recipeId);
+    }
+  });
   it('mulberry32 returns values in [0,1) and is repeatable', () => {
     const a = mulberry32(9), b = mulberry32(9);
     for (let i = 0; i < 100; i++) { const x = a(); expect(x).toBeGreaterThanOrEqual(0); expect(x).toBeLessThan(1); expect(b()).toBe(x); }
