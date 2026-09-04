@@ -69,4 +69,34 @@ describe('persistence', () => {
     storage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 99 }));
     expect(loadState(storage)).toEqual(initialState);
   });
+  it('discards saved prefs whose list fields are not lists', () => {
+    // The failure mode this guards: a Preferences field renamed or retyped without bumping
+    // schemaVersion, so an old install restores prefs the UI then dereferences and dies on.
+    const storage = memoryStorage();
+    const { stapleIds, ...withoutStaples } = defaultPrefs();
+    expect(stapleIds.length).toBeGreaterThan(0);
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...initialState, prefs: withoutStaples }));
+    expect(loadState(storage)).toEqual(initialState);
+
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...initialState, prefs: { ...defaultPrefs(), mealsToPlan: 'dinner' } }));
+    expect(loadState(storage)).toEqual(initialState);
+
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...initialState, prefs: { ...defaultPrefs(), storeId: 7 } }));
+    expect(loadState(storage)).toEqual(initialState);
+  });
+  it('discards a saved plan with no slots array', () => {
+    const storage = memoryStorage();
+    const { slots, ...withoutSlots } = plan;
+    expect(slots.length).toBeGreaterThan(0);
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...initialState, prefs: defaultPrefs(), plan: withoutSlots }));
+    expect(loadState(storage)).toEqual(initialState);
+  });
+  it('keeps state whose prefs and plan are absent or null', () => {
+    const storage = memoryStorage();
+    storage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1 }));
+    expect(loadState(storage)).toEqual(initialState);
+    const good: AppState = { ...initialState, prefs: defaultPrefs(), plan };
+    saveState(good, storage);
+    expect(loadState(storage)).toEqual(good);
+  });
 });

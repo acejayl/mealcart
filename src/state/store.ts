@@ -57,6 +57,31 @@ function getStorage(): Storage | null {
   try { return typeof localStorage === 'undefined' ? null : localStorage; } catch { return null; }
 }
 
+/**
+ * Cheap shape check on the two records the UI dereferences without guarding. schemaVersion
+ * alone is not enough: the first time a field is added or renamed without bumping it, an
+ * install with old saved state would throw on every launch. Anything unexpected is discarded
+ * so the app starts at setup instead of dying.
+ */
+function looksUsable(parsed: Partial<AppState>): boolean {
+  // `parsed` is only typed by assertion - at runtime these are whatever was on disk.
+  const prefs = parsed.prefs as unknown;
+  const plan = parsed.plan as unknown;
+  if (prefs !== undefined && prefs !== null) {
+    if (typeof prefs !== 'object' || Array.isArray(prefs)) return false;
+    const p = prefs as Record<string, unknown>;
+    if (typeof p.storeId !== 'string') return false;
+    for (const k of ['mealsToPlan', 'appliances', 'excludedAllergens', 'stapleIds']) {
+      if (!Array.isArray(p[k])) return false;
+    }
+  }
+  if (plan !== undefined && plan !== null) {
+    if (typeof plan !== 'object' || Array.isArray(plan)) return false;
+    if (!Array.isArray((plan as Record<string, unknown>).slots)) return false;
+  }
+  return true;
+}
+
 export function loadState(storage: Storage | null = getStorage()): AppState {
   if (!storage) return initialState;
   try {
@@ -64,6 +89,7 @@ export function loadState(storage: Storage | null = getStorage()): AppState {
     if (!raw) return initialState;
     const parsed = JSON.parse(raw) as Partial<AppState>;
     if (parsed.schemaVersion !== 1) return initialState;
+    if (!looksUsable(parsed)) throw new Error('saved state has an unexpected shape');
     return {
       ...initialState,
       ...parsed,

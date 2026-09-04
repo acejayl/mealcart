@@ -49,6 +49,7 @@ p { margin: 0.25rem 0; }
 .check.on .check-box { background: var(--accent); border-color: var(--accent); color: #fff; }
 .strike { text-decoration: line-through; color: var(--muted); }
 .warn-line { color: var(--warn); }
+.error-detail { background: var(--warn-soft); color: var(--warn); border-radius: var(--radius); padding: 10px 14px; margin: 12px 0; white-space: pre-wrap; word-break: break-word; font-size: 0.85rem; }
 .dim { opacity: 0.72; }
 .dim h2 { color: var(--muted); }
 .total { font-size: 1.3rem; font-weight: 700; }
